@@ -6,12 +6,10 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/shake-on-it/app-tmpl/backend/api"
-	"github.com/shake-on-it/app-tmpl/backend/api/admin"
-	"github.com/shake-on-it/app-tmpl/backend/auth"
-	"github.com/shake-on-it/app-tmpl/backend/common"
-
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"github.com/fairfieldfootball/league/backend/api"
+	"github.com/fairfieldfootball/league/backend/api/admin"
+	"github.com/fairfieldfootball/league/backend/auth"
+	"github.com/fairfieldfootball/league/backend/common"
 )
 
 var (
@@ -45,17 +43,7 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 
 	clearAuth(w, srvCtx)
 
-	var userID primitive.ObjectID
-	if user, ok := api.CtxUser(r); ok {
-		userID = user.ID
-	}
-	if refreshToken, ok := api.CtxRefreshToken(r); ok {
-		userID = refreshToken.UserID
-	}
-	if accessToken, ok := api.CtxAccessToken(r); ok {
-		userID = accessToken.UserID
-	}
-
+	userID := api.CtxUserID(r)
 	if userID.IsZero() {
 		api.Response(w, r, http.StatusNoContent)
 		return
@@ -108,6 +96,24 @@ func Register(w http.ResponseWriter, r *http.Request) {
 func Whoami(w http.ResponseWriter, r *http.Request) {
 	user := api.MustHaveUser(r)
 	api.JSONResponse(w, r, 0, user)
+}
+
+func UpdateUserData(w http.ResponseWriter, r *http.Request) {
+	srvCtx := admin.MustHaveServerContext(r)
+	user := api.MustHaveUser(r)
+
+	var data auth.UserData
+	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
+		api.ErrorResponse(w, r, common.NewErr("failed to parse user data", common.ErrCodeBadRequest))
+		return
+	}
+
+	if err := srvCtx.AuthService.UpdateUser(r.Context(), user.ID, data); err != nil {
+		api.ErrorResponse(w, r, err)
+		return
+	}
+
+	api.Response(w, r, http.StatusNoContent)
 }
 
 func authResponse(w http.ResponseWriter, srvCtx admin.ServerContext, user auth.User, tokens auth.Tokens) error {

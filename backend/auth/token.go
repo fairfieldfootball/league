@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/shake-on-it/app-tmpl/backend/common"
+	"github.com/fairfieldfootball/league/backend/common"
 
 	jwt "github.com/golang-jwt/jwt/v4"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -16,6 +16,8 @@ const (
 	CookieAccessToken  = "access-token"
 	CookieRefreshToken = "refresh-token"
 	CookieUserToken    = "user-token"
+
+	CookieYahooToken = "yahoo-token"
 )
 
 var (

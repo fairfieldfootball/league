@@ -8,9 +8,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/shake-on-it/app-tmpl/backend/api/middleware"
-	"github.com/shake-on-it/app-tmpl/backend/common"
-	"github.com/shake-on-it/app-tmpl/backend/core/mongodb"
+	"github.com/fairfieldfootball/league/backend/api/middleware"
+	"github.com/fairfieldfootball/league/backend/common"
+	"github.com/fairfieldfootball/league/backend/core/mongodb"
 
 	"github.com/gorilla/mux"
 )
@@ -90,8 +90,11 @@ func (s *Service) Shutdown(ctx context.Context) error {
 	}
 	s.logger.Info("no longer accepting incoming requests")
 
-	s.mongoProvider.Close(ctx)
-	s.logger.Info("disconnected from mongodb")
+	if err := s.mongoProvider.Close(ctx); err != nil {
+		s.logger.Warnf("failed to disconnect from mongodb: %s", err)
+	} else {
+		s.logger.Info("disconnected from mongodb")
+	}
 
 	select {
 	case <-ctx.Done():
@@ -102,10 +105,11 @@ func (s *Service) Shutdown(ctx context.Context) error {
 }
 
 func (s *Service) buildServers(ctx context.Context) error {
-	s.mongoProvider = mongodb.NewProvider(s.config.DB.URI, s.logger)
+	s.mongoProvider = mongodb.NewProvider(s.config.DB.URI)
 	if err := s.mongoProvider.Setup(ctx); err != nil {
 		return err
 	}
+	s.logger.Info("connected to mongodb")
 
 	s.AdminAPI = &apiAdmin{
 		config:          s.config,

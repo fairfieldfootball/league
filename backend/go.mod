@@ -1,4 +1,4 @@
-module github.com/shake-on-it/app-tmpl/backend
+module github.com/fairfieldfootball/league/backend
 
 go 1.13
 
@@ -10,10 +10,12 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/joho/godotenv v1.4.0 // indirect
 	github.com/kr/pretty v0.3.0 // indirect
+	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8 // indirect
 	github.com/rogpeppe/go-internal v1.8.1 // indirect
 	github.com/rs/cors v1.8.2
 	github.com/urfave/cli/v2 v2.11.2 // indirect
 	go.mongodb.org/mongo-driver v1.10.0
 	go.uber.org/zap v1.16.0
 	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa // indirect
+	golang.org/x/sys v0.0.0-20220829200755-d48e67d00261 // indirect
 )

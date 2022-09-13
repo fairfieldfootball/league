@@ -3,8 +3,8 @@ package router
 import (
 	"net/http"
 
-	"github.com/shake-on-it/app-tmpl/backend/api"
-	"github.com/shake-on-it/app-tmpl/backend/api/private/v1"
+	"github.com/fairfieldfootball/league/backend/api"
+	"github.com/fairfieldfootball/league/backend/api/private/v1"
 )
 
 const (

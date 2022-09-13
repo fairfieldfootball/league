@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/shake-on-it/app-tmpl/backend/common"
+	"github.com/fairfieldfootball/league/backend/common"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -22,7 +22,7 @@ type Provider interface {
 	Client() *mongo.Client
 
 	Setup(ctx context.Context) error
-	Close(ctx context.Context)
+	Close(ctx context.Context) error
 }
 
 const (
@@ -37,11 +37,11 @@ type Settings struct {
 	TimeoutSocket  time.Duration
 }
 
-func NewProvider(uri string, logger common.Logger) Provider {
-	return NewProviderWithSettings(uri, Settings{}, logger)
+func NewProvider(uri string) Provider {
+	return NewProviderWithSettings(uri, Settings{})
 }
 
-func NewProviderWithSettings(uri string, settings Settings, logger common.Logger) Provider {
+func NewProviderWithSettings(uri string, settings Settings) Provider {
 	if settings.TimeoutConnect == 0 {
 		settings.TimeoutConnect = defaultTimeoutConnect
 	}
@@ -51,7 +51,7 @@ func NewProviderWithSettings(uri string, settings Settings, logger common.Logger
 	if settings.TimeoutSocket == 0 {
 		settings.TimeoutSocket = defaultTimeoutSocket
 	}
-	return &provider{uri: uri, settings: settings, logger: logger}
+	return &provider{uri: uri, settings: settings}
 }
 
 type provider struct {
@@ -60,8 +60,6 @@ type provider struct {
 
 	client   *mongo.Client
 	clientMu sync.Mutex
-
-	logger common.Logger
 }
 
 func (p *provider) Setup(ctx context.Context) error {
@@ -104,7 +102,6 @@ func (p *provider) Setup(ctx context.Context) error {
 		return fmt.Errorf("failed to ping mongodb: %s", err)
 	}
 
-	p.logger.Info("connected to mongodb")
 	p.client = client
 	return nil
 }
@@ -119,13 +116,11 @@ func (p *provider) Client() *mongo.Client {
 	return p.client
 }
 
-func (p *provider) Close(ctx context.Context) {
+func (p *provider) Close(ctx context.Context) error {
 	p.clientMu.Lock()
 	client := p.client
 	p.client = nil
 	p.clientMu.Unlock()
 
-	if err := client.Disconnect(ctx); err != nil {
-		p.logger.Warnf("failed to disconnect from mongodb client: %s", err)
-	}
+	return client.Disconnect(ctx)
 }

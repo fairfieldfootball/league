@@ -27,6 +27,12 @@ type User struct {
 	Type     string               `bson:"type" json:"type,omitempty"`
 	Status   string               `bson:"status" json:"status,omitempty"`
 	Sessions []primitive.ObjectID `bson:"sessions" json:"-"`
+	UserData `bson:",inline"`
+}
+
+type UserData struct {
+	FirstName string `json:"first_name" bson:"first_name"`
+	LastName  string `json:"last_name" bson:"last_name"`
 }
 
 func (u *User) Validate() error {

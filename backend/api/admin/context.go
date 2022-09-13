@@ -3,9 +3,10 @@ package admin
 import (
 	"context"
 
-	"github.com/shake-on-it/app-tmpl/backend/api"
-	"github.com/shake-on-it/app-tmpl/backend/common"
-	"github.com/shake-on-it/app-tmpl/backend/core"
+	"github.com/fairfieldfootball/league/backend/api"
+	"github.com/fairfieldfootball/league/backend/common"
+	"github.com/fairfieldfootball/league/backend/core"
+	"github.com/fairfieldfootball/league/backend/core/yahoo"
 )
 
 type ctxKey int
@@ -17,7 +18,8 @@ const (
 type ServerContext struct {
 	Config common.Config
 
-	AuthService *core.AuthService
+	AuthService  *core.AuthService
+	YahooService *yahoo.Service
 
 	// RefreshTokenStore *core.RefreshTokenStore
 	// PasswordStore *core.PasswordStore

@@ -3,7 +3,7 @@ package utils
 import (
 	"testing"
 
-	"github.com/shake-on-it/app-tmpl/backend/common"
+	"github.com/fairfieldfootball/league/backend/common"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"

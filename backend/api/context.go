@@ -3,8 +3,10 @@ package api
 import (
 	"context"
 
-	"github.com/shake-on-it/app-tmpl/backend/auth"
-	"github.com/shake-on-it/app-tmpl/backend/common"
+	"github.com/fairfieldfootball/league/backend/auth"
+	"github.com/fairfieldfootball/league/backend/common"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type ctxKey int
@@ -15,6 +17,7 @@ const (
 	ctxKeyUserToken
 	ctxKeyAccessToken
 	ctxKeyRefreshToken
+	ctxKeyYahooToken
 )
 
 type Contexter interface {
@@ -60,6 +63,19 @@ func MustHaveRefreshToken(r Contexter) auth.RefreshToken {
 	return refreshToken
 }
 
+func CtxYahooToken(r Contexter) (string, bool) {
+	yahooToken, ok := r.Context().Value(ctxKeyYahooToken).(string)
+	return yahooToken, ok
+}
+
+func MustHaveYahooToken(r Contexter) string {
+	yahooToken, ok := CtxYahooToken(r)
+	if !ok {
+		panic("must have yahoo token")
+	}
+	return yahooToken
+}
+
 func CtxRequestID(r Contexter) (string, bool) {
 	requestID, ok := r.Context().Value(ctxKeyRequestID).(string)
 	return requestID, ok
@@ -86,6 +102,19 @@ func MustHaveUser(r Contexter) auth.User {
 	return userToken
 }
 
+func CtxUserID(r Contexter) primitive.ObjectID {
+	if user, ok := CtxUser(r); ok {
+		return user.ID
+	}
+	if refreshToken, ok := CtxRefreshToken(r); ok {
+		return refreshToken.UserID
+	}
+	if accessToken, ok := CtxAccessToken(r); ok {
+		return accessToken.UserID
+	}
+	return primitive.NilObjectID
+}
+
 type ContextBuilder interface {
 	Attach(key, val interface{}) ContextBuilder
 	Context() context.Context
@@ -94,7 +123,8 @@ type ContextBuilder interface {
 	AttachLogger(logger common.Logger) ContextBuilder
 	AttachRequestID(requestID string) ContextBuilder
 	AttachRefreshToken(refreshToken auth.RefreshToken) ContextBuilder
-	AttachUserToken(userToken interface{}) ContextBuilder
+	AttachUserToken(userToken auth.User) ContextBuilder
+	AttachYahooToken(yahooToken string) ContextBuilder
 }
 
 type contextBuilder struct {
@@ -130,6 +160,10 @@ func (b *contextBuilder) AttachRequestID(requestID string) ContextBuilder {
 	return b.Attach(ctxKeyRequestID, requestID)
 }
 
-func (b *contextBuilder) AttachUserToken(userToken interface{}) ContextBuilder {
+func (b *contextBuilder) AttachUserToken(userToken auth.User) ContextBuilder {
 	return b.Attach(ctxKeyUserToken, userToken)
+}
+
+func (b *contextBuilder) AttachYahooToken(yahooToken string) ContextBuilder {
+	return b.Attach(ctxKeyYahooToken, yahooToken)
 }

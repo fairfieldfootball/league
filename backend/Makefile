@@ -32,9 +32,9 @@ endif
 build:
 	mkdir -p public/bin
 	GOOS=${go_os} GOARCH=${go_arch} GO111MODULE=on ${GOCMD} build -ldflags="\
-        -X 'github.com/shake-on-it/app-tmpl/backend/common.ServerEnv=${env}' \
-        -X 'github.com/shake-on-it/app-tmpl/backend/common.ServerGitHash=${GIT_HASH}' \
-        -X 'github.com/shake-on-it/app-tmpl/backend/common.ServerBuildTime=${BUILD_TIME}'" \
+        -X 'github.com/fairfieldfootball/league/backend/common.ServerEnv=${env}' \
+        -X 'github.com/fairfieldfootball/league/backend/common.ServerGitHash=${GIT_HASH}' \
+        -X 'github.com/fairfieldfootball/league/backend/common.ServerBuildTime=${BUILD_TIME}'" \
     -o public/bin/${BINARY_NAME} \
     cmd/service/service.go
 
@@ -45,9 +45,9 @@ endif
 
 start:
 	${GOCMD} run -ldflags="\
-        -X 'github.com/shake-on-it/app-tmpl/backend/common.ServerEnv=${env}' \
-        -X 'github.com/shake-on-it/app-tmpl/backend/common.ServerGitHash=${GIT_HASH}' \
-        -X 'github.com/shake-on-it/app-tmpl/backend/common.ServerBuildTime=${BUILD_TIME}'" \
+        -X 'github.com/fairfieldfootball/league/backend/common.ServerEnv=${env}' \
+        -X 'github.com/fairfieldfootball/league/backend/common.ServerGitHash=${GIT_HASH}' \
+        -X 'github.com/fairfieldfootball/league/backend/common.ServerBuildTime=${BUILD_TIME}'" \
     cmd/service/service.go \
     --config etc/configs/${env}.json
 

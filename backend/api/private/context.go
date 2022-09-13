@@ -3,8 +3,8 @@ package private
 import (
 	"context"
 
-	"github.com/shake-on-it/app-tmpl/backend/api"
-	"github.com/shake-on-it/app-tmpl/backend/api/admin"
+	"github.com/fairfieldfootball/league/backend/api"
+	"github.com/fairfieldfootball/league/backend/api/admin"
 )
 
 type ctxKey int

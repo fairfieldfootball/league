@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/shake-on-it/app-tmpl/backend/auth"
-	"github.com/shake-on-it/app-tmpl/backend/common"
+	"github.com/fairfieldfootball/league/backend/auth"
+	"github.com/fairfieldfootball/league/backend/common"
 
 	jwt "github.com/golang-jwt/jwt/v4"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -87,6 +87,10 @@ func (s *AuthService) CreateUser(ctx context.Context, reg auth.Registration) (au
 	// TODO: send user verification
 
 	return user, nil
+}
+
+func (s *AuthService) UpdateUser(ctx context.Context, userID primitive.ObjectID, userData auth.UserData) error {
+	return s.userStore.Update(ctx, userID, userData)
 }
 
 func (s *AuthService) Login(ctx context.Context, creds auth.Credentials) (auth.User, auth.Tokens, error) {

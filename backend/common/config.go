@@ -1,6 +1,7 @@
 package common
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -28,6 +29,7 @@ type Config struct {
 	Auth   AuthConfig   `json:"auth"`
 	DB     DBConfig     `json:"db"`
 	Server ServerConfig `json:"server"`
+	Yahoo  YahooConfig  `json:"yahoo"`
 }
 
 func (c *Config) Validate() error {
@@ -96,7 +98,7 @@ func (c AuthConfig) RefreshTokenExpiry() time.Duration {
 }
 
 type DBConfig struct {
-	URI    string `json:"uri"`
+	URI string `json:"uri"`
 }
 
 type ServerConfig struct {
@@ -134,4 +136,19 @@ func (c ServerConfig) baseURL() string {
 	}
 
 	return sb.String()
+}
+
+type YahooConfig struct {
+	ClientID string `json:"client_id"`
+	ClientSecret string `json:"client_secret"`
+}
+
+func (c *YahooConfig) validate() error {
+	if c.ClientID == "" {
+		return errors.New("yahoo client id is empty")
+	}
+	if c.ClientSecret == "" {
+		return errors.New("yahoo client secret is empty")
+	}
+	return nil
 }

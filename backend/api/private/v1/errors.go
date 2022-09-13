@@ -4,8 +4,8 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/shake-on-it/app-tmpl/backend/api"
-	"github.com/shake-on-it/app-tmpl/backend/common"
+	"github.com/fairfieldfootball/league/backend/api"
+	"github.com/fairfieldfootball/league/backend/common"
 )
 
 func GetJSONBasicError(w http.ResponseWriter, r *http.Request) {

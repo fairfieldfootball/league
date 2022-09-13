@@ -7,14 +7,15 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/shake-on-it/app-tmpl/backend/api"
-	"github.com/shake-on-it/app-tmpl/backend/api/admin"
-	"github.com/shake-on-it/app-tmpl/backend/api/admin/router"
-	"github.com/shake-on-it/app-tmpl/backend/api/middleware"
-	"github.com/shake-on-it/app-tmpl/backend/auth"
-	"github.com/shake-on-it/app-tmpl/backend/common"
-	"github.com/shake-on-it/app-tmpl/backend/core"
-	"github.com/shake-on-it/app-tmpl/backend/core/mongodb"
+	"github.com/fairfieldfootball/league/backend/api"
+	"github.com/fairfieldfootball/league/backend/api/admin"
+	"github.com/fairfieldfootball/league/backend/api/admin/router"
+	"github.com/fairfieldfootball/league/backend/api/middleware"
+	"github.com/fairfieldfootball/league/backend/auth"
+	"github.com/fairfieldfootball/league/backend/common"
+	"github.com/fairfieldfootball/league/backend/core"
+	"github.com/fairfieldfootball/league/backend/core/mongodb"
+	"github.com/fairfieldfootball/league/backend/core/yahoo"
 
 	"github.com/gorilla/mux"
 )
@@ -28,7 +29,8 @@ type apiAdmin struct {
 	logger        common.Logger
 	mongoProvider mongodb.Provider
 
-	AuthService core.AuthService
+	AuthService  core.AuthService
+	YahooService yahoo.Service
 
 	RefreshTokenStore core.RefreshTokenStore
 	PasswordStore     core.PasswordStore
@@ -55,17 +57,26 @@ func (a *apiAdmin) setup(ctx context.Context) error {
 		return err
 	}
 
+	yahooClient := yahoo.NewClient(a.config)
+	yahooRefreshTokenStore, err := yahoo.NewRefreshTokenStore(a.mongoProvider.Client())
+	if err != nil {
+		return err
+	}
+
 	a.AuthService = core.NewAuthService(a.config, userStore, passwordStore, refreshTokenStore)
 	a.RefreshTokenStore = refreshTokenStore
 	a.PasswordStore = passwordStore
 	a.UserStore = userStore
+
+	a.YahooService = yahoo.NewService(yahooClient, yahooRefreshTokenStore)
 	return nil
 }
 
 func (a apiAdmin) ServerContext() admin.ServerContext {
 	return admin.ServerContext{
-		Config:      a.config,
-		AuthService: &a.AuthService,
+		Config:       a.config,
+		AuthService:  &a.AuthService,
+		YahooService: &a.YahooService,
 	}
 }
 
@@ -79,6 +90,10 @@ func (a *apiAdmin) ApplyRoutes(r *mux.Router) {
 
 			if route.Needs&api.RouteNeedsUser != 0 {
 				handler = a.loadUser(handler)
+			}
+
+			if route.Needs&api.RouteNeedsYahooToken != 0 {
+				handler = a.loadYahooToken(handler)
 			}
 
 			if route.Needs&api.RouteNeedsAccessToken != 0 {
@@ -289,6 +304,24 @@ func (a apiAdmin) loadUser(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r.WithContext(
 			api.NewContextBuilder(r.Context()).
 				AttachUserToken(user).
+				Context(),
+		))
+	})
+}
+
+func (a apiAdmin) loadYahooToken(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var yahooToken string
+		if cookie, err := r.Cookie(auth.CookieYahooToken); err == nil {
+			yahooToken = cookie.Value
+		} else if err != http.ErrNoCookie {
+			api.ErrorResponse(w, r, auth.ErrMalformedCookie)
+			return
+		}
+
+		next.ServeHTTP(w, r.WithContext(
+			api.NewContextBuilder(r.Context()).
+				AttachYahooToken(yahooToken).
 				Context(),
 		))
 	})

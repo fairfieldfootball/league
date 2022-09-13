@@ -3,13 +3,14 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 	"os"
 
-	"github.com/shake-on-it/app-tmpl/backend/auth"
-	"github.com/shake-on-it/app-tmpl/backend/common"
-	"github.com/shake-on-it/app-tmpl/backend/core"
-	"github.com/shake-on-it/app-tmpl/backend/core/mongodb"
+	"github.com/fairfieldfootball/league/backend/auth"
+	"github.com/fairfieldfootball/league/backend/common"
+	"github.com/fairfieldfootball/league/backend/core"
+	"github.com/fairfieldfootball/league/backend/core/mongodb"
 
 	"github.com/joho/godotenv"
 	"github.com/kr/pretty"
@@ -99,18 +100,14 @@ func addUser(cliCtx *cli.Context) error {
 		return errors.New("must specify salt")
 	}
 
-	logger, err := common.NewLogger("auth", common.LoggerOptionsDev)
-	if err != nil {
-		return err
-	}
-
 	ctx, cancel := context.WithTimeout(context.Background(), common.TimeoutServerOp)
 	defer cancel()
 
-	mongoProvider := mongodb.NewProvider(mongoURI, logger)
+	mongoProvider := mongodb.NewProvider(mongoURI)
 	if err := mongoProvider.Setup(ctx); err != nil {
 		return err
 	}
+	fmt.Println("connected to mongodb")
 
 	userStore, err := core.NewUserStore(mongoProvider.Client())
 	if err != nil {
@@ -145,7 +142,7 @@ func addUser(cliCtx *cli.Context) error {
 		return err
 	}
 
-	logger.Infof("successfully created user:\n%# v\n", pretty.Formatter(user))
+	fmt.Printf("successfully created user:\n%# v\n", pretty.Formatter(user))
 
 	return nil
 }

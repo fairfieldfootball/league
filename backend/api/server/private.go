@@ -5,10 +5,10 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/shake-on-it/app-tmpl/backend/api/middleware"
-	"github.com/shake-on-it/app-tmpl/backend/api/private"
-	"github.com/shake-on-it/app-tmpl/backend/api/private/router"
-	"github.com/shake-on-it/app-tmpl/backend/common"
+	"github.com/fairfieldfootball/league/backend/api/middleware"
+	"github.com/fairfieldfootball/league/backend/api/private"
+	"github.com/fairfieldfootball/league/backend/api/private/router"
+	"github.com/fairfieldfootball/league/backend/common"
 )
 
 type apiPrivate struct {

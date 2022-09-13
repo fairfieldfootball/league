@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/shake-on-it/app-tmpl/backend/auth"
-	"github.com/shake-on-it/app-tmpl/backend/common"
-	"github.com/shake-on-it/app-tmpl/backend/core/mongodb"
-	"github.com/shake-on-it/app-tmpl/backend/core/namespaces"
+	"github.com/fairfieldfootball/league/backend/auth"
+	"github.com/fairfieldfootball/league/backend/common"
+	"github.com/fairfieldfootball/league/backend/core/mongodb"
+	"github.com/fairfieldfootball/league/backend/core/namespaces"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"

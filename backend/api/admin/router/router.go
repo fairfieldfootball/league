@@ -3,8 +3,8 @@ package router
 import (
 	"net/http"
 
-	"github.com/shake-on-it/app-tmpl/backend/api"
-	"github.com/shake-on-it/app-tmpl/backend/api/admin/v1"
+	"github.com/fairfieldfootball/league/backend/api"
+	"github.com/fairfieldfootball/league/backend/api/admin/v1"
 )
 
 const (
@@ -13,9 +13,13 @@ const (
 	pathUser        = "/user"
 	pathUserSession = "/user/session"
 
-	systemStatus  = "/system/status"
-	systemVersion = "/system/version"
+	pathYahooFFC     = "/yahoo/ffc"
+	pathYahooSession = "/yahoo/session"
 )
+
+// var (
+// 	pathYahooGame = "/yahoo/games/" + api.PathVar(v1.ParamGame)
+// )
 
 var (
 	Versions = []string{pathV1}
@@ -26,6 +30,11 @@ var (
 			{
 				v1.Whoami,
 				api.RouteEndpoint{http.MethodGet, pathUser, false},
+				api.RouteNeedsSession,
+			},
+			{
+				v1.UpdateUserData,
+				api.RouteEndpoint{http.MethodPut, pathUser, true},
 				api.RouteNeedsSession,
 			},
 			{
@@ -46,6 +55,23 @@ var (
 			{
 				v1.Logout,
 				api.RouteEndpoint{http.MethodDelete, pathUserSession, false},
+				api.RouteNeedsNothing,
+			},
+
+			// yahoo routes
+			{
+				v1.YahooGame,
+				api.RouteEndpoint{http.MethodGet, pathYahooFFC, false},
+				api.RouteNeedsYahooToken,
+			},
+			{
+				v1.YahooSessionBegin,
+				api.RouteEndpoint{http.MethodPost, pathYahooSession, true},
+				api.RouteNeedsNothing,
+			},
+			{
+				v1.YahooSessionEnd,
+				api.RouteEndpoint{http.MethodDelete, pathYahooSession, false},
 				api.RouteNeedsNothing,
 			},
 		},

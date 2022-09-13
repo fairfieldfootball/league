@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/shake-on-it/app-tmpl/backend/common"
-	"github.com/shake-on-it/app-tmpl/backend/common/test"
-	"github.com/shake-on-it/app-tmpl/backend/common/test/assert"
+	"github.com/fairfieldfootball/league/backend/common"
+	"github.com/fairfieldfootball/league/backend/common/test"
+	"github.com/fairfieldfootball/league/backend/common/test/assert"
 )
 
 func TestAuth(t *testing.T) {

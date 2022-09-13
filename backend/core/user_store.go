@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/shake-on-it/app-tmpl/backend/auth"
-	"github.com/shake-on-it/app-tmpl/backend/common"
-	"github.com/shake-on-it/app-tmpl/backend/core/mongodb"
-	"github.com/shake-on-it/app-tmpl/backend/core/namespaces"
+	"github.com/fairfieldfootball/league/backend/auth"
+	"github.com/fairfieldfootball/league/backend/common"
+	"github.com/fairfieldfootball/league/backend/core/mongodb"
+	"github.com/fairfieldfootball/league/backend/core/namespaces"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -20,6 +20,7 @@ type UserStore interface {
 	FindByName(ctx context.Context, name string) (auth.User, error)
 
 	Insert(ctx context.Context, user auth.User) error
+	Update(ctx context.Context, id primitive.ObjectID, data auth.UserData) error
 
 	AddSession(ctx context.Context, id, sessionID primitive.ObjectID) (auth.User, error)
 	RemoveSession(ctx context.Context, id, sessionID primitive.ObjectID) (auth.User, error)
@@ -71,6 +72,20 @@ func (s *userStore) FindByName(ctx context.Context, name string) (auth.User, err
 func (s *userStore) Insert(ctx context.Context, user auth.User) error {
 	if _, err := s.coll.InsertOne(ctx, user); err != nil {
 		return common.WrapErr(fmt.Errorf("failed to create user: %s", err), common.ErrCodeServer)
+	}
+	return nil
+}
+
+func (s *userStore) Update(ctx context.Context, id primitive.ObjectID, data auth.UserData) error {
+	if _, err := s.coll.UpdateOne(
+		ctx,
+		bson.D{{namespaces.FieldID, id}},
+		bson.D{{"$set", bson.D{
+			{namespaces.FieldFirstName, data.FirstName},
+			{namespaces.FieldLastName, data.LastName},
+		}}},
+	); err != nil {
+		return common.WrapErr(fmt.Errorf("failed to update user: %s", err), common.ErrCodeServer)
 	}
 	return nil
 }

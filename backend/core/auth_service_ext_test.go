@@ -10,12 +10,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/shake-on-it/app-tmpl/backend/auth"
-	"github.com/shake-on-it/app-tmpl/backend/common"
-	"github.com/shake-on-it/app-tmpl/backend/common/test"
-	"github.com/shake-on-it/app-tmpl/backend/common/test/assert"
-	u "github.com/shake-on-it/app-tmpl/backend/common/test/utils"
-	"github.com/shake-on-it/app-tmpl/backend/core/namespaces"
+	"github.com/fairfieldfootball/league/backend/auth"
+	"github.com/fairfieldfootball/league/backend/common"
+	"github.com/fairfieldfootball/league/backend/common/test"
+	"github.com/fairfieldfootball/league/backend/common/test/assert"
+	u "github.com/fairfieldfootball/league/backend/common/test/utils"
+	"github.com/fairfieldfootball/league/backend/core/namespaces"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"

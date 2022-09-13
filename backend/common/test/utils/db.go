@@ -5,8 +5,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/shake-on-it/app-tmpl/backend/core/mongodb"
-	"github.com/shake-on-it/app-tmpl/backend/core/namespaces"
+	"github.com/fairfieldfootball/league/backend/core/mongodb"
+	"github.com/fairfieldfootball/league/backend/core/namespaces"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -51,7 +51,7 @@ var SkipUnlessMongoRunning = func() func(t *testing.T) {
 		mongodbChecked = true
 		uri := MongoURI()
 
-		mongodbProvider = mongodb.NewProvider(MongoURI(), NewLogger(t))
+		mongodbProvider = mongodb.NewProvider(MongoURI())
 
 		if err := mongodbProvider.Setup(context.Background()); err != nil {
 			MustSkip(t, "failed to connect to mongodb at "+uri)

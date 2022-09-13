@@ -10,7 +10,9 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/shake-on-it/app-tmpl/backend/common"
+	"github.com/fairfieldfootball/league/backend/common"
+
+	"go.uber.org/zap"
 )
 
 func errorStatus(code common.ErrCode) int {
@@ -49,16 +51,18 @@ func ErrorResponse(w http.ResponseWriter, r *http.Request, err error) {
 	logger, _ := CtxLogger(r)
 	requestID, _ := CtxRequestID(r)
 
-	if logger != nil {
-		logger.Error(fmt.Sprintf("request failed: %s", err))
-	}
-
 	body := common.ErrResponse{Message: err.Error(), RequestID: requestID}
 	if e, ok := err.(common.ErrCodeProvider); ok {
 		body.Code = e.Code()
+		logger = logger.With(zap.String("err_code", string(e.Code())))
 	}
 	if e, ok := err.(common.ErrDataProvider); ok {
 		body.Data = e.Data()
+		logger = logger.With(zap.Any("err_data", e.Data()))
+	}
+
+	if logger != nil {
+		logger.Error(fmt.Sprintf("request failed: %s", err))
 	}
 
 	JSONResponse(w, r, errorStatus(body.Code), body)
@@ -107,9 +111,11 @@ const (
 
 	HeaderContentDisposition = "Content-Disposition"
 
-	HeaderContentType = "Content-Type"
-	ContentTypeJSON   = "application/json"
-	ContentTypeText   = "text/plain"
+	HeaderContentType         = "Content-Type"
+	ContentTypeJSON           = "application/json"
+	ContentTypeXML            = "application/xml"
+	ContentTypeText           = "text/plain"
+	ContentTypeFormURLEncoded = "application/x-www-form-urlencoded"
 
 	HeaderCredentials = "Credentials"
 

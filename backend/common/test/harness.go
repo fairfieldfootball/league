@@ -10,12 +10,12 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/shake-on-it/app-tmpl/backend/api"
-	"github.com/shake-on-it/app-tmpl/backend/api/server"
-	"github.com/shake-on-it/app-tmpl/backend/auth"
-	"github.com/shake-on-it/app-tmpl/backend/common"
-	"github.com/shake-on-it/app-tmpl/backend/common/test/assert"
-	u "github.com/shake-on-it/app-tmpl/backend/common/test/utils"
+	"github.com/fairfieldfootball/league/backend/api"
+	"github.com/fairfieldfootball/league/backend/api/server"
+	"github.com/fairfieldfootball/league/backend/auth"
+	"github.com/fairfieldfootball/league/backend/common"
+	"github.com/fairfieldfootball/league/backend/common/test/assert"
+	u "github.com/fairfieldfootball/league/backend/common/test/utils"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -118,7 +118,7 @@ func (th *Harness) CreateUser(username string) error {
 
 func (th *Harness) Login() error {
 	_, err := th.APIServer.AdminAPI.UserStore.FindByName(context.Background(), testUsername)
-	if err, ok := err.(common.ErrCoder); ok && err.Code() == common.ErrCodeNotFound {
+	if err, ok := err.(common.ErrCodeProvider); ok && err.Code() == common.ErrCodeNotFound {
 		if err := th.CreateUser(testUsername); err != nil {
 			return err
 		}

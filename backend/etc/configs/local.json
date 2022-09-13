@@ -4,7 +4,7 @@
     "password_salt": "${auth_password_salt}"
   },
   "api": {
-    "cors_origins": ["http://localhost:3000", "http://localhost:5051"],
+    "cors_origins": ["http://localhost:3000"],
     "request_timeout_secs": 120
   },
   "db": {
@@ -13,5 +13,9 @@
   "server": {
     "host": "localhost",
     "port": 5050
+  },
+  "yahoo": {
+    "client_id": "${yahoo_client_id}",
+    "client_secret": "${yahoo_client_secret}"
   }
 }

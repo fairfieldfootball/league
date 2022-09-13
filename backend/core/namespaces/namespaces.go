@@ -1,13 +1,14 @@
 package namespaces
 
 var (
-	DBApp    = "tmpl_app"
+	DBApp    = "ffc_app"
 	CollBets = "bets"
 
-	DBAuth            = "tmpl_auth"
-	CollRefreshTokens = "refresh_tokens"
-	CollPasswords     = "passwords"
-	CollUsers         = "users"
+	DBAuth                 = "ffc_auth"
+	CollRefreshTokens      = "refresh_tokens"
+	CollPasswords          = "passwords"
+	CollUsers              = "users"
+	CollYahooRefreshTokens = "yahoo_refresh_tokens"
 )
 
 type Namespace struct {
@@ -21,6 +22,7 @@ var (
 		{&DBAuth, &CollRefreshTokens},
 		{&DBAuth, &CollPasswords},
 		{&DBAuth, &CollUsers},
+		{&DBAuth, &CollYahooRefreshTokens},
 	}
 )
 
@@ -28,6 +30,7 @@ const (
 	FieldID       = "_id"
 	FieldName     = "name"
 	FieldSessions = "sessions"
+	FieldUserID   = "user_id"
 
 	FieldConsumed = "consumed"
 	FieldSub      = "sub"
@@ -35,4 +38,9 @@ const (
 	FieldUsername       = "username"
 	FieldSalt           = "salt"
 	FieldHashedPassword = "hashed_password"
+
+	FieldCode = "code"
+
+	FieldFirstName = "first_name"
+	FieldLastName  = "last_name"
 )

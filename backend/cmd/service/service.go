@@ -11,8 +11,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/shake-on-it/app-tmpl/backend/api/server"
-	"github.com/shake-on-it/app-tmpl/backend/common"
+	"github.com/fairfieldfootball/league/backend/api/server"
+	"github.com/fairfieldfootball/league/backend/common"
 
 	"github.com/drone/envsubst"
 	"go.uber.org/zap"

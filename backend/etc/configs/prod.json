@@ -13,5 +13,9 @@
   "server": {
     "host": "shakeonit.app",
     "ssl_enabled": true
+  },
+  "yahoo": {
+    "client_id": "${yahoo_client_id}",
+    "client_secret": "${yahoo_client_secret}"
   }
 }

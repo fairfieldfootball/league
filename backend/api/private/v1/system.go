@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/shake-on-it/app-tmpl/backend/api"
-	"github.com/shake-on-it/app-tmpl/backend/common"
+	"github.com/fairfieldfootball/league/backend/api"
+	"github.com/fairfieldfootball/league/backend/common"
 )
 
 func GetHealth(w http.ResponseWriter, r *http.Request) {
